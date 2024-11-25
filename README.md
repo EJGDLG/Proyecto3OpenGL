@@ -40,7 +40,7 @@ Actualiza transformaciones de cámara y objetos.
 Renderiza la escena 3D en cada cuadro.
 Audio:
 
-Reproduce música de fondo con ajustes de volumen.
+Reproduce música de fondo con ajustes de volumen con la techa J
 Finalización:
 
 Cierra Pygame de manera segura al salir del programa.
