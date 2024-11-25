@@ -41,6 +41,7 @@ Renderiza la escena 3D en cada cuadro.
 Audio:
 
 Reproduce música de fondo con ajustes de volumen con la techa J
+Reproduce efecto de disparo de revolver con ajustes de volumen con la techa H
 Finalización:
 
 Cierra Pygame de manera segura al salir del programa.
