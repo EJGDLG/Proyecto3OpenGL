@@ -57,12 +57,13 @@ class Model:
 
                 self.vertexCount += 3
             except ZeroDivisionError:
-                print("Warning: Degenerate UV mapping in face skipped.")
+                pass
 
         self.positionBuffer = Buffer(positions)
         self.texCoordsBuffer = Buffer(texCoords)
         self.normalsBuffer = Buffer(normals)
         self.tangentBuffer = Buffer(tangents)
+
 
     def AddTexture(self, textureFilename, textureType="diffuse"):
         textureSurface = image.load(textureFilename)

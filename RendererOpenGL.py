@@ -10,6 +10,13 @@ height = 720
 
 pygame.init()
 
+# Inicializar el módulo de música
+pygame.mixer.init()
+
+# Cargar el archivo de música
+pygame.mixer.music.load("Call-of-Duty-2-Theme.mp3")  # Cambia "music_file.mp3" por la ruta de tu archivo
+pygame.mixer.music.set_volume(0.5)  # Ajusta el volumen (0.0 a 1.0)
+
 screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
 
@@ -49,7 +56,6 @@ helicopter.scale = glm.vec3(0.05, 0.05, 0.05)
 
 # Añadir modelos a la escena
 renderer.scene.extend([faceModel, moonModel, spidey, helicopter])
-
 
 # Shaders iniciales
 vShader = vertex_shader
@@ -135,7 +141,14 @@ while isRunning:
                 fShader = Sepia_Shader
                 renderer.SetShaders(vShader, fShader)
 
- # Movimiento de la cámara con límites para camHeight y camDistance
+            # Reproducir música al presionar "J"
+            elif event.key == pygame.K_j:
+                if not pygame.mixer.music.get_busy():  # Verifica si la música no está sonando
+                    pygame.mixer.music.play()
+                else:
+                    pygame.mixer.music.stop()  # Detener música si ya está sonando
+
+    # Movimiento de la cámara con límites para camHeight y camDistance
     if keys[K_LEFT]:
         faceModel.rotation.y -= 45 * deltaTime
     if keys[K_RIGHT]:
@@ -192,14 +205,3 @@ while isRunning:
     pygame.display.flip()
 
 pygame.quit()
-
-
-
-
-
-
-
-
-
-
-
