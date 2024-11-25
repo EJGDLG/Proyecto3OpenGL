@@ -13,9 +13,13 @@ pygame.init()
 # Inicializar el módulo de música
 pygame.mixer.init()
 
-# Cargar el archivo de música
-pygame.mixer.music.load("Call-of-Duty-2-Theme.mp3")  # Cambia "music_file.mp3" por la ruta de tu archivo
+# Cargar el archivo de música de fondo
+pygame.mixer.music.load("sounds/Call-of-Duty-2-Theme.mp3")  # Cambia "Call-of-Duty-2-Theme.mp3" por la ruta de tu archivo
 pygame.mixer.music.set_volume(0.5)  # Ajusta el volumen (0.0 a 1.0)
+
+# Cargar el sonido del revolver
+revolver_sound = pygame.mixer.Sound("sounds/revolver.mp3")  # Cambia "revolver.mp3" por la ruta de tu archivo
+revolver_sound.set_volume(1.0)  # Ajusta el volumen del sonido
 
 screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
@@ -82,10 +86,8 @@ while isRunning:
             isRunning = False
 
         elif event.type == pygame.MOUSEWHEEL:
-
             if event.y < 0 and camDistance < 10:
                 camDistance -= event.y * deltaTime * 10
-
             if event.y > 0 and camDistance > 2:
                 camDistance -= event.y * deltaTime * 10
 
@@ -100,107 +102,38 @@ while isRunning:
             if event.key == pygame.K_ESCAPE:
                 isRunning = False
             elif event.key == pygame.K_SPACE:
-                renderer.ToggleFilledMode()  # Asegúrate de que el método ToggleFilledMode() exista
-            # Cambiar entre modos de renderizado
-            elif event.key == pygame.K_F1:
-                renderer.filledMode()
-            elif event.key == pygame.K_F2:
-                renderer.WireFrameMode()
-
-            # Cambiar shaders de vértices
-            elif event.key == pygame.K_F3:
-                vShader = vertex_shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F4:
-                vShader = distortion_shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F5:
-                vShader = water_shader
-                renderer.SetShaders(vShader, fShader)
-
-            # Cambiar shaders de fragmentos
-            elif event.key == pygame.K_F6:
-                fShader = fragment_shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F7:
-                fShader = negative_shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F8:
-                fShader = Wobble_Shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F9:
-                fShader = Twist_Shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F10:
-                fShader = Ripple_Shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F11:
-                fShader = Glow_Shader
-                renderer.SetShaders(vShader, fShader)
-            elif event.key == pygame.K_F12:
-                fShader = Sepia_Shader
-                renderer.SetShaders(vShader, fShader)
-
-            # Reproducir música al presionar "J"
+                renderer.ToggleFilledMode()
+            elif event.key == pygame.K_h:
+                revolver_sound.play()  # Reproducir el sonido del revolver
             elif event.key == pygame.K_j:
                 if not pygame.mixer.music.get_busy():  # Verifica si la música no está sonando
                     pygame.mixer.music.play()
                 else:
                     pygame.mixer.music.stop()  # Detener música si ya está sonando
 
-    # Movimiento de la cámara con límites para camHeight y camDistance
+    # Movimiento de la cámara
     if keys[K_LEFT]:
         faceModel.rotation.y -= 45 * deltaTime
     if keys[K_RIGHT]:
         faceModel.rotation.y += 45 * deltaTime
     if keys[K_UP]:
-        camHeight = min(2, camHeight + 10 * deltaTime)      # Mover cámara hacia arriba con límite
+        camHeight = min(2, camHeight + 10 * deltaTime)
     if keys[K_DOWN]:
-        camHeight = max(-2, camHeight - 10 * deltaTime)     # Mover cámara hacia abajo con límite
-
-    if keys[K_PAGEUP]:
-        renderer.pointLight.y += 1 * deltaTime
-
-    if keys[K_PAGEDOWN]:
-        renderer.pointLight.y -= 1 * deltaTime
-
+        camHeight = max(-2, camHeight - 10 * deltaTime)
+    if keys[K_w] and camDistance > 2:
+        camDistance -= 2 * deltaTime
+    if keys[K_s] and camDistance < 10:
+        camDistance += 2 * deltaTime
     if keys[K_a]:
         camAngle -= 45 * deltaTime
-
     if keys[K_d]:
         camAngle += 45 * deltaTime
-
-    if keys[K_w]:
-        if camDistance > 2:
-            camDistance -= 2 * deltaTime
-
-    if keys[K_s]:
-        if camDistance < 10:
-            camDistance += 2 * deltaTime
-
-    if keys[K_q]:
-        if renderer.camera.position.y < 2:
-            renderer.camera.position.y += 5 * deltaTime
-
-    if keys[K_e]:
-        if renderer.camera.position.y > -2:
-            renderer.camera.position.y -= 5 * deltaTime
-
-    if pygame.mouse.get_pressed()[0]:
-        camAngle -= mouseVel[0] * deltaTime * 5
-
-        if mouseVel[1] > 0 and renderer.camera.position.y < 2:
-            renderer.camera.position.y += mouseVel[1] * deltaTime
-
-        if mouseVel[1] < 0 and renderer.camera.position.y > -2:
-            renderer.camera.position.y += mouseVel[1] * deltaTime
 
     # Actualizar la cámara
     renderer.camera.LookAt(glm.vec3(faceModel.translation.x, faceModel.translation.y + camHeight, faceModel.translation.z))
     renderer.camera.Orbit(center=faceModel.translation, distance=camDistance, angle=camAngle)
 
     renderer.Render()
-
     renderer.time += deltaTime
     pygame.display.flip()
 
